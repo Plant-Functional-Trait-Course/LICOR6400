@@ -16,6 +16,7 @@ Calculate metrics for LI-COR 6400
 All calculations are from the formulae in the excel file LI-COR6400 exports
 }
 \examples{
+library("dplyr")
 file <- system.file("0000-AAA8891-210718", package = "LICOR6400")
 lic <- read_licor6400(file = file)
 #add total leaf area - normally use a join
