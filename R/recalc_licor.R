@@ -4,6 +4,7 @@
 #' @importFrom dplyr %>% select mutate if_else
 #' @importFrom rlang .data
 #' @examples
+#' library("dplyr")
 #' file <- system.file("0000-AAA8891-210718", package = "LICOR6400")
 #' lic <- read_licor6400(file = file)
 #' #add total leaf area - normally use a join

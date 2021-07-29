@@ -1,5 +1,5 @@
 Package: LICOR6400
-Title: Reads and Processes LI-COR 6400 files
+Title: Reads and Processes LI-COR 6400 Files
 Version: 0.0.0.9000
 Authors@R: 
     person(given = "Richard",
