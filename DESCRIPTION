@@ -7,7 +7,7 @@ Authors@R:
            role = c("aut", "cre"),
            email = "richard.telford@uib.no",
            comment = c(ORCID = "0000-0001-9826-3076"))
-Description: What the package does (one paragraph).
+Description: Reads LI-COR 6400 output files and calculates metrics.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
