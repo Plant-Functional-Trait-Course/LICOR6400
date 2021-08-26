@@ -100,23 +100,38 @@ read_licor6400 <- function(file){
 
   dat <- read_delim(paste(dat, collapse = "\n"), delim = "\t")
 
-  meta <- read_delim(
-    file = paste(meta, collapse = "\n"),
-    delim = " ",
-    col_names = c("HHMMSS", "variable", "parameter",
-                  "arrow", "level", "unit")) %>%
-    select(-.data$arrow)
-
-  dat <- bind_rows(# bind logged data and metadata
-    meta %>%
-      # discard parameter changes except block temp
-      filter(.data$parameter == "Tblock"),
-    dat) %>%
-    arrange(.data$HHMMSS) %>% # sort data by time logged
-    # fill block temp parameter in for logged data
-    fill(.data$variable, .data$parameter, .data$level, .data$unit) %>%
-    filter(!is.na(.data$Obs)) %>%
-    group_by(.data$level) %>% # group by block temperature
-    mutate(n = n())
+  if (length(meta)>0) {
+    meta <- read_delim(
+      file = paste(meta, collapse = "\n"),
+      delim = " ",
+      col_names = c("HHMMSS", "variable", "parameter",
+                    "arrow", "level", "unit")) %>%
+      select(-.data$arrow)
+  } else {
+    meta <- NULL
+  }
+  
+  
+  
+  if(is.null(meta)) {
+    dat <- dat %>% 
+      arrange(HHMMSS) %>% # sort data by time logged
+      filter(!is.na(Obs)) %>%
+      mutate(n = n())
+    
+  } else {
+    dat <- bind_rows(# bind logged data and metadata
+      meta %>%
+        # discard parameter changes except block temp
+        filter(.data$parameter == "Tblock"),
+      dat) %>%
+      arrange(.data$HHMMSS) %>% # sort data by time logged
+      # fill block temp parameter in for logged data
+      fill(.data$variable, .data$parameter, .data$level, .data$unit) %>%
+      filter(!is.na(.data$Obs)) %>%
+      group_by(.data$level) %>% # group by block temperature
+      mutate(n = n())
+  }
+  
   return(dat)
 }
