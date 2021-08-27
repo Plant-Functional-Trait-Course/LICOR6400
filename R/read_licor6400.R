@@ -100,26 +100,17 @@ read_licor6400 <- function(file){
 
   dat <- read_delim(paste(dat, collapse = "\n"), delim = "\t")
 
-  if (length(meta)>0) {
+  if (length(meta) == 0) { # no meta data
+    dat <- dat %>% 
+      arrange(HHMMSS) # sort data by time logged
+  } else {
     meta <- read_delim(
       file = paste(meta, collapse = "\n"),
       delim = " ",
       col_names = c("HHMMSS", "variable", "parameter",
                     "arrow", "level", "unit")) %>%
       select(-.data$arrow)
-  } else {
-    meta <- NULL
-  }
-  
-  
-  
-  if(is.null(meta)) {
-    dat <- dat %>% 
-      arrange(HHMMSS) %>% # sort data by time logged
-      filter(!is.na(Obs)) %>%
-      mutate(n = n())
-    
-  } else {
+
     dat <- bind_rows(# bind logged data and metadata
       meta %>%
         # discard parameter changes except block temp
@@ -128,10 +119,12 @@ read_licor6400 <- function(file){
       arrange(.data$HHMMSS) %>% # sort data by time logged
       # fill block temp parameter in for logged data
       fill(.data$variable, .data$parameter, .data$level, .data$unit) %>%
-      filter(!is.na(.data$Obs)) %>%
-      group_by(.data$level) %>% # group by block temperature
-      mutate(n = n())
+      group_by(.data$level) # group by block temperature
   }
+  
+  dat <- dat %>% 
+    filter(!is.na(.data$Obs)) %>%
+    mutate(n = n())
   
   return(dat)
 }
