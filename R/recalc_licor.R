@@ -14,8 +14,11 @@
 
 # calculate extra leaf related metrics which scale from basic set of measurements
 calc_licor <- function(licor){
+  
+  if(is.null(licor$`EBal?`)) { licor$`EBal?` = 0 }
+  
   licor %>%
-    select(-(.data$Photo:.data$CTleaf),-.data$BLC_1,-.data$BLCond) %>%
+    #select(-(.data$Photo:.data$CTleaf),-.data$BLC_1,-.data$BLCond) %>%
     mutate(
       BLC_1 = .data$Area * .data$BLCslope + .data$BLCoffst,
       fda = .data$Flow * 0.000001 / (.data$total.leaf.area * 0.0001),
